@@ -6,6 +6,7 @@ import 'package:interview_project/screens/all_products_screen.dart';
 import 'package:interview_project/utils/constants.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/isloading_provider.dart';
 import '../repositories/login_repo.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -20,15 +21,11 @@ final TextEditingController _passwordController=TextEditingController();
 
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      // statusBarColor is used to set Status bar color in Android devices.
       statusBarColor: tealDark,
 
-      // To make Status bar icons color white in Android devices.
       statusBarIconBrightness: Brightness.light,
 
-      // statusBarBrightness is used to set Status bar icon color in iOS.
       statusBarBrightness: Brightness.dark,
-      // Here light means dark icon color for Status bar.
     ));
     final height=MediaQuery.sizeOf(context).height;
     final width=MediaQuery.sizeOf(context).width;
@@ -134,25 +131,34 @@ controller: _usernameController,
             ),
                 SizedBox(height: height*0.06,),
 
-                ElevatedButton(
-                  style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(tealLight)),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                    String result= await loginUser(_usernameController.text,_passwordController.text);
-                      if(result=='success'){
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ChangeNotifierProvider<AllProductsProvider>(
-                           create: (BuildContext context) => AllProductsProvider(),
-                          child: AllProductsScreen(),
-                        ),));
+                Selector<isLoadingProvider,bool>(selector: (p0, p1) => p1.isLoading,
+                  builder: (context, isLoading, child) {
+                  return
+                      ElevatedButton(
+                    style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(tealLight)),
+                    onPressed: () async {
+
+                      if (_formKey.currentState!.validate()) {
+                        Provider.of<isLoadingProvider>(context, listen: false).isLoading=true;
+
+                        String result= await loginUser(_usernameController.text,_passwordController.text);
+                        if(result=='success'){
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ChangeNotifierProvider<AllProductsProvider>(
+                             create: (BuildContext context) => AllProductsProvider(),
+                            child: AllProductsScreen(),
+                          ),));
+                        }
+                        else{
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
+                        }
                       }
-                      else{
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
-                      }
-                    }
-                  },
-                  child: SizedBox(
-                      height: height*0.07,
-                      width:width,child: const Center(child: Text("Continue",style: TextStyle(color: whiteColor)))),
+                      Provider.of<isLoadingProvider>(context, listen: false).isLoading=false;
+                    },
+                    child: SizedBox(
+                        height: height*0.07,
+                        width:width,child:  Center(child: isLoading?CircularProgressIndicator():Text("Continue",style: TextStyle(color: whiteColor)))),
+                  );
+                }
                 ),
                 SizedBox(height: height*0.03,),
                 TextButton(onPressed: () {

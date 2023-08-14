@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:interview_project/providers/isloading_provider.dart';
 import 'package:interview_project/providers/obscure_provider.dart';
 import 'package:interview_project/screens/login_screen.dart';
 import 'package:interview_project/utils/constants.dart';
@@ -24,7 +25,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: tealDark),
         useMaterial3: true,
       ),
-      home: ChangeNotifierProvider<ObscureProvider>(create: (context) => ObscureProvider(),child: LoginScreen()),
+      home: MultiProvider(providers: [
+        ChangeNotifierProvider<ObscureProvider>(create: (context) => ObscureProvider()),
+    ChangeNotifierProvider<isLoadingProvider>(create: (context) => isLoadingProvider()),
+    ],child: LoginScreen())
     );
   }
 }
