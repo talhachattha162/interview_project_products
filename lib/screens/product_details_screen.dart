@@ -6,17 +6,12 @@ import 'package:provider/provider.dart';
 
 import '../models/product.dart';
 
-class ProductDetailsScreen extends StatefulWidget {
+
+
+class ProductDetailsScreen extends StatelessWidget {
+  
   final Product product;
-  ProductDetailsScreen({super.key,required this.product});
-
-  @override
-  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
-}
-
-class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  // double heigh=0.37;
-
+  const ProductDetailsScreen({super.key,required this.product});
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
@@ -24,7 +19,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(actions: [PopupMenuButton(itemBuilder: (context) {
-          return [PopupMenuItem(child: Text('Delete'))];
+          return [const PopupMenuItem(child: Text('Delete'))];
         },)]),
         body:  Stack(
 
@@ -41,17 +36,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       child: FadeInImage(
                         fit: BoxFit.fill,
                         image: NetworkImage(
-                          widget.product.image,
+                          product.image,
                         ),
                         placeholder: NetworkImage(
-                          widget.product.image,
+                          product.image,
                         ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 10),
                       child: Container(
-                          color: Colors.black.withOpacity(0.6),child: Text('Details',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: headingFontSize))),
+                          color: Colors.black.withOpacity(0.6),child: const Text('Details',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: headingFontSize))),
                     ),
 
                   ],
@@ -60,7 +55,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10),
                   child:    Container(
                       color: Colors.black.withOpacity(0.6), // Semi-transparent overlay color
-                      child: Text(widget.product.price.toString()+'AED',style: TextStyle(fontSize: headingFontSize,fontWeight: FontWeight.bold,color: Colors.white),)),
+                      child: Text('${product.price}AED',style: const TextStyle(fontSize: headingFontSize,fontWeight: FontWeight.bold,color: Colors.white),)),
                 ),
               ],
             ),
@@ -71,15 +66,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
                Selector<ProductDetailsProvider,double>(
                  selector: (p0, p1) => p1.containerHeight,
-                 builder: (context, containerheight, child) =>  Positioned(
+                 builder: (context, containerHeight, child) =>  Positioned(
                     bottom: 0,
                     left: 0,
                     right: 0, // Set right to 0 to stretch the container across the screen
                     child: Container(
-                    height: height * containerheight,
-                    decoration: BoxDecoration(
-                      color: navsColor,
-                      borderRadius: BorderRadius.only(
+                    height: height * containerHeight,
+                    decoration:  BoxDecoration(
+                      color: containerHeight==0.37?navsColor:Colors.blueGrey,
+                      borderRadius:const BorderRadius.only(
                         topLeft: Radius.circular(40),
                         topRight: Radius.circular(40),
                       ),
@@ -92,23 +87,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Container(
-
-                                    decoration:containerheight==0.37?null: BoxDecoration(border: Border.all(width: 1,color: Colors.white54),
-
-                                      borderRadius: BorderRadius.all(Radius.circular(40),
-
-                                      ),
-                                    ),
-                                    child: IconButton(onPressed: () {
-                                      if(containerheight==0.37){
-                                        Provider.of<ProductDetailsProvider>(context,listen: false).containerHeight=0.6;
-                                      }
-                                      else{
-                                        Provider.of<ProductDetailsProvider>(context,listen: false).containerHeight=0.37;
-                                      }
-                                    }, icon: Icon(containerheight==0.37?Icons.keyboard_arrow_up_outlined:Icons.keyboard_arrow_down_outlined,color: tealLight,)),
-                                  ),
+                                  IconButton(onPressed: () {
+                                    if(containerHeight==0.37){
+                                      Provider.of<ProductDetailsProvider>(context,listen: false).containerHeight=0.6;
+                                    }
+                                    else{
+                                      Provider.of<ProductDetailsProvider>(context,listen: false).containerHeight=0.37;
+                                    }
+                                  }, icon: Icon(containerHeight==0.37?Icons.keyboard_arrow_up_outlined:Icons.keyboard_arrow_down_outlined,color: tealLight,)),
                                 ],
                               ),
                           Row(
@@ -118,35 +104,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
                               onPressed: () {
 
-                            }, child: Icon(Icons.file_upload_outlined,color: tealLight),),
+                            }, child: const Icon(Icons.file_upload_outlined,color: tealLight),),
                             ElevatedButton(
-                                style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(tealLight)),
+                                style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(tealLight)),
                                 onPressed: () {
 
-                            }, child: SizedBox(width: width*0.6,height: height*0.06,child: Center(child: Text('Order Now',style: TextStyle(color: whiteColor),))))
+                            }, child: SizedBox(width: width*0.6,height: height*0.06,child: const Center(child: Text('Order Now',style: TextStyle(color: whiteColor),))))
                           ],),
-                          Text('Description',style: TextStyle(fontStyle: FontStyle.italic),),
+                          const Text('Description',style: TextStyle(fontStyle: FontStyle.italic),),
                               Text(
-                                widget.product.description,
-                                maxLines: containerheight==0.37?7:9,
+                                product.description,
+                                maxLines: containerHeight==0.37?7:9,
                                 overflow: TextOverflow.ellipsis,
                               ),
 Visibility(
-  visible: containerheight!=0.37?true:false,
+  visible: containerHeight!=0.37?true:false,
   child:   Card(child: Column(children: [
     Padding(
       padding: const EdgeInsets.all(5.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text('Reviews('+widget.product.rating.count.toString()+')'),
+          Text('Reviews(${product.rating.count})'),
         ],
       ),
     ),
     Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-      Text(widget.product.rating.rate.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+      Text(product.rating.rate.toString(),style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
       SizedBox(
             // color: Colors.black.withOpacity(0.6), // Semi-transparent overlay color
 
@@ -154,18 +140,18 @@ Visibility(
         height: height * 0.03,
         child:
         RatingBar.builder(
-          initialRating: widget.product.rating.rate,
+          initialRating: product.rating.rate,
           minRating: 1,
           direction: Axis.horizontal,
           allowHalfRating: true,
           itemCount: 5,
           itemSize: 20.0,
-          itemBuilder: (context, _) => Icon(
+          itemBuilder: (context, _) => const Icon(
             Icons.star,
             color: Colors.amber,
           ),
           onRatingUpdate: (rating) {
-            print(rating);
+
           },
         )
 

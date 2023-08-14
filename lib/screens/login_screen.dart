@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:interview_project/providers/all_products_provider.dart';
+import 'package:interview_project/providers/obscure_provider.dart';
 import 'package:interview_project/screens/all_products_screen.dart';
 import 'package:interview_project/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -11,14 +12,14 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final GlobalKey<FormState> _formKey=GlobalKey();
-TextEditingController _usernameController=TextEditingController();
-TextEditingController _passwordController=TextEditingController();
+final TextEditingController _usernameController=TextEditingController();
+final TextEditingController _passwordController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
 
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       // statusBarColor is used to set Status bar color in Android devices.
       statusBarColor: tealDark,
 
@@ -40,7 +41,7 @@ resizeToAvoidBottomInset: false,
             Container(
               width: width,
               height: height*0.4,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
                     Color(0xFF188095),
@@ -50,7 +51,7 @@ resizeToAvoidBottomInset: false,
                   end: Alignment.centerRight,
                 ),
               ),
-              child: SafeArea(
+              child: const SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -60,8 +61,8 @@ resizeToAvoidBottomInset: false,
                   ],
                 ),
               ),),
-            Padding(
-              padding: const EdgeInsets.all(30.0),
+            const Padding(
+              padding:  EdgeInsets.all(30.0),
               child: Text('Login',style: TextStyle(color: whiteColor,fontSize: headingFontSize,fontWeight: FontWeight.bold)),
             )
           ],),
@@ -78,7 +79,7 @@ resizeToAvoidBottomInset: false,
 
                 TextFormField(
 controller: _usernameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     label: Text("Username"),
                     border: UnderlineInputBorder(),
                   ),
@@ -95,15 +96,27 @@ controller: _usernameController,
                 ),
                 SizedBox(height: height*0.02,),
 
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(
+            Selector<ObscureProvider,bool>(selector: (p0, p1) => p1.obscurePassword,
+              builder: (context, obscurePass, child) =>
+               TextFormField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
 
-                    label: Text("Password"),
+                      label: const Text("Password"),
 
-                    border: UnderlineInputBorder(),
+                      border: const UnderlineInputBorder(),
+                      suffixIcon:  IconButton(
+                          icon: Icon(
+                            obscurePass ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            Provider.of<ObscureProvider>(context,listen: false).obscurePassword=!Provider.of<ObscureProvider>(context,listen: false).obscurePassword;
+                          },
+                        )
+                      ),
 
-                  ),
+
+
 
                   validator: (value) {
 
@@ -115,12 +128,14 @@ controller: _usernameController,
                     return null;
                   },
 
-                  obscureText: true,
+                  obscureText: obscurePass,
+
                 ),
+            ),
                 SizedBox(height: height*0.06,),
 
                 ElevatedButton(
-                  style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(tealLight)),
+                  style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(tealLight)),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                     String result= await loginUser(_usernameController.text,_passwordController.text);
@@ -131,18 +146,18 @@ controller: _usernameController,
                         ),));
                       }
                       else{
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$result')));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result)));
                       }
                     }
                   },
                   child: SizedBox(
                       height: height*0.07,
-                      width:width,child: Center(child: Text("Continue",style: TextStyle(color: whiteColor)))),
+                      width:width,child: const Center(child: Text("Continue",style: TextStyle(color: whiteColor)))),
                 ),
                 SizedBox(height: height*0.03,),
                 TextButton(onPressed: () {
 
-                }, child: Text('Need Help?',style: TextStyle(color: blackColor),))
+                }, child: const Text('Need Help?',style: TextStyle(color: blackColor),))
               ],
             ),
           ),

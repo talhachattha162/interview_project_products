@@ -13,7 +13,7 @@ import '../models/product.dart';
 import '../widgets/custom_appbar.dart';
 
 class AllProductsScreen extends StatefulWidget {
-  AllProductsScreen({super.key});
+  const AllProductsScreen({super.key});
 
   @override
   State<AllProductsScreen> createState() => _AllProductsScreenState();
@@ -21,7 +21,7 @@ class AllProductsScreen extends StatefulWidget {
 
 class _AllProductsScreenState extends State<AllProductsScreen> {
 
-  ProductRepository _productRepository = ProductRepository();
+  final ProductRepository _productRepository = ProductRepository();
   bool isLoading=true;
   final int itemsPerPage = 7;
   int startIndex = 0;
@@ -41,12 +41,10 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     try {
       products = await _productRepository.fetchProducts();
     } catch (error) {
-
+ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error loading data')));
     }
-    startIndex = (1 -
-            1) *
-        itemsPerPage;
-    endIndex = startIndex + itemsPerPage;
+    startIndex = 0;
+    endIndex = 7;
     displayedProducts = products!.sublist(startIndex,
         endIndex < products.length ? endIndex : products.length);
     isLoading = false;
@@ -56,7 +54,8 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: tealLight,
       statusBarIconBrightness: Brightness.light,
       statusBarBrightness: Brightness.light,
@@ -65,11 +64,11 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
     return SafeArea(
       child: Scaffold(
           bottomNavigationBar: navBar(context),
-          appBar: CustomAppBar(),
+          appBar: const CustomAppBar(),
           body: Consumer<AllProductsProvider>(
             builder: (context, allProductsProvider, child) {
               return isLoading
-                  ? Center(child: CircularProgressIndicator())
+                  ? const Center(child: CircularProgressIndicator())
                   : Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 15),
@@ -104,14 +103,14 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                   displayedProducts[index]),
                                           index == displayedProducts.length - 1
                                               ? Container()
-                                              : Divider(),
+                                              : const Divider(),
                                         ],
                                       ),
                                     ),
                                     index == displayedProducts.length - 1
                                         ? Column(
                                             children: [
-                                              SizedBox(height: 10),
+                                              const SizedBox(height: 10),
                                               Wrap(
                                                 children: List.generate(
                                                   (allProductsProvider.allProducts.length / itemsPerPage).ceil(),
@@ -143,7 +142,7 @@ class _AllProductsScreenState extends State<AllProductsScreen> {
                                                               : Colors.transparent,
                                                           border: Border.all(width: 1, color: Colors.grey),
                                                         ),
-                                                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                                                         child: Text((pageIndex + 1).toString()), // Incremented by 1
                                                       ),
                                                     ),

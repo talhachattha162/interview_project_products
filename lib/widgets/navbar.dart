@@ -4,7 +4,7 @@ import 'package:interview_project/utils/constants.dart';
 Container navBar(BuildContext context) {
   return Container(
     height: 60,
-      decoration: BoxDecoration(
+      decoration:const BoxDecoration(
         border: Border(
           top: BorderSide(width: 1, color: Colors.black38),
         ),

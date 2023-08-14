@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
 import '../models/product.dart';
-import '../utils/constants.dart';
 
 class ProductCard extends StatelessWidget {
-   Product product;
-   ProductCard({super.key,required this.product});
+   final Product product;
+   const ProductCard({super.key,required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,7 @@ class ProductCard extends StatelessWidget {
           children: [
             Container(
 
-decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.black12),borderRadius: BorderRadius.all(Radius.circular(5))),
+decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.black12),borderRadius: const BorderRadius.all(Radius.circular(5))),
 
 
               child: SizedBox(
@@ -46,14 +44,14 @@ decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.black12),bor
     color: Colors.black.withOpacity(0.5), // Semi-transparent overlay color
 
                     child: Text(
-                      product.price.toString()+'AED',
-                      style: TextStyle(
+                      '${product.price}AED',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                   // color: Colors.black.withOpacity(0.5), // Semi-transparent overlay color
 
     width: 100,
@@ -67,12 +65,12 @@ decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.black12),bor
                       allowHalfRating: true,
                       itemCount: 5,
                       itemSize: 20.0,
-                      itemBuilder: (context, _) => Icon(
+                      itemBuilder: (context, _) => const Icon(
                         Icons.star,
                         color: Colors.amber,
                       ),
                       onRatingUpdate: (rating) {
-                        print(rating);
+                        // print(rating);
                       },
                     )
 
@@ -92,7 +90,7 @@ decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.black12),bor
                 product.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontStyle: FontStyle.italic),
+                style: const TextStyle(fontStyle: FontStyle.italic),
               ),
               SizedBox(height: height * 0.01),
               Text(
