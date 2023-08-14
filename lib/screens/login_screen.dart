@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:interview_project/providers/all_products_provider.dart';
 import 'package:interview_project/screens/all_products_screen.dart';
 import 'package:interview_project/utils/constants.dart';
+import 'package:provider/provider.dart';
+
+import '../repositories/login_repo.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final GlobalKey<FormState> _formKey=GlobalKey();
+TextEditingController _usernameController=TextEditingController();
+TextEditingController _passwordController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +77,7 @@ resizeToAvoidBottomInset: false,
                 SizedBox(height: height*0.03,),
 
                 TextFormField(
-
+controller: _usernameController,
                   decoration: InputDecoration(
                     label: Text("Username"),
                     border: UnderlineInputBorder(),
@@ -90,7 +96,7 @@ resizeToAvoidBottomInset: false,
                 SizedBox(height: height*0.02,),
 
                 TextFormField(
-
+                  controller: _passwordController,
                   decoration: InputDecoration(
 
                     label: Text("Password"),
@@ -115,12 +121,18 @@ resizeToAvoidBottomInset: false,
 
                 ElevatedButton(
                   style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(tealLight)),
-                  onPressed: () {
-
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllProductsScreen(),));
-
+                    String result= await loginUser(_usernameController.text,_passwordController.text);
+                      if(result=='success'){
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ChangeNotifierProvider<AllProductsProvider>(
+                           create: (BuildContext context) => AllProductsProvider(),
+                          child: AllProductsScreen(),
+                        ),));
+                      }
+                      else{
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$result')));
+                      }
                     }
                   },
                   child: SizedBox(

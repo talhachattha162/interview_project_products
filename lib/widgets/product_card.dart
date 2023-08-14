@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import '../models/product.dart';
 import '../utils/constants.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key});
+   Product product;
+   ProductCard({super.key,required this.product});
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
     final width = MediaQuery.sizeOf(context).width;
     return SizedBox(
-      height: height * 0.38,
+      height: height * 0.40,
       width: width,
       child: Column(children: [
         Stack(
@@ -26,10 +29,10 @@ decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.black12),bor
                 height: height * 0.25,
                 child: FadeInImage(fit: BoxFit.fill,
                   image: NetworkImage(
-                    'https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg',
+                    product.image,
                   ),
                   placeholder: NetworkImage(
-                    'https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg',
+                    product.image,
                   ),
                 ),
               ),
@@ -39,26 +42,40 @@ decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.black12),bor
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '00000000AED',
-                    style: TextStyle(
-                      color: blackShade,
-                      fontWeight: FontWeight.bold,
+    Container(
+    color: Colors.black.withOpacity(0.5), // Semi-transparent overlay color
+
+                    child: Text(
+                      product.price.toString()+'AED',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  SizedBox(
-                    width: 120,
-                    height: height * 0.05,
-                    child: ListView.builder(
+                  Container(
+                  // color: Colors.black.withOpacity(0.5), // Semi-transparent overlay color
+
+    width: 100,
+                    height: height * 0.03,
+                    child:
+                    RatingBar.builder(
+                      unratedColor: Colors.blueGrey,
+                      initialRating: product.rating.rate,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
                       itemCount: 5,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return Icon(
-                          Icons.star_outlined,
-                          color: goldenColor,
-                        );
+                      itemSize: 20.0,
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      onRatingUpdate: (rating) {
+                        print(rating);
                       },
-                    ),
+                    )
+
                   ),
                 ],
               ),
@@ -72,14 +89,14 @@ decoration: BoxDecoration(border: Border.all(width: 2,color: Colors.black12),bor
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Golden Shirt',
-                maxLines: 2,
+                product.title,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontWeight: FontWeight.bold,fontSize: productFontSize),
+                style: TextStyle(fontStyle: FontStyle.italic),
               ),
               SizedBox(height: height * 0.01),
               Text(
-                'Slim-fitting style, contrast raglan long sleeve, three-button henley placket, light weight & soft fabric for breathable and comfortable wearing. And Solid stitched shirts with round neck made for durability and a great fit for casual fashion wear and diehard baseball fans. The Henley style round neckline includes a three-button placket.',
+                product.description,
                 maxLines: 2,
 
                 overflow: TextOverflow.ellipsis,

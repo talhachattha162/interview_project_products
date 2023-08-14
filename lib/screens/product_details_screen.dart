@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:interview_project/providers/product_details_provider.dart';
 import 'package:interview_project/utils/constants.dart';
+import 'package:provider/provider.dart';
+
+import '../models/product.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  const ProductDetailsScreen({super.key});
+  final Product product;
+  ProductDetailsScreen({super.key,required this.product});
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  double heigh=0.36;
+  // double heigh=0.37;
 
   @override
   Widget build(BuildContext context) {
@@ -26,22 +32,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Stack(
               alignment: Alignment.bottomLeft,
               children: [
-                SizedBox(
-                  width: width,
-                  height: height*0.52,
-                  child: FadeInImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(
-                      'https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg',
+                Stack(
+                  alignment: Alignment.topLeft,
+                  children: [
+                    SizedBox(
+                      width: width,
+                      height: height*0.5,
+                      child: FadeInImage(
+                        fit: BoxFit.fill,
+                        image: NetworkImage(
+                          widget.product.image,
+                        ),
+                        placeholder: NetworkImage(
+                          widget.product.image,
+                        ),
+                      ),
                     ),
-                    placeholder: NetworkImage(
-                      'https://fakestoreapi.com/img/71li-ujtlUL._AC_UX679_.jpg',
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0,vertical: 10),
+                      child: Container(
+                          color: Colors.black.withOpacity(0.6),child: Text('Details',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: headingFontSize))),
                     ),
-                  ),
+
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 10),
-                  child: Text('1000AED',style: TextStyle(fontSize: headingFontSize,fontWeight: FontWeight.bold,color: blackShade),),
+                  child:    Container(
+                      color: Colors.black.withOpacity(0.6), // Semi-transparent overlay color
+                      child: Text(widget.product.price.toString()+'AED',style: TextStyle(fontSize: headingFontSize,fontWeight: FontWeight.bold,color: Colors.white),)),
                 ),
               ],
             ),
@@ -50,100 +69,116 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             alignment: Alignment.bottomLeft,
             children: [
 
-               Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0, // Set right to 0 to stretch the container across the screen
-                  child: Container(
-                  height: height * heigh,
-                  decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
+               Selector<ProductDetailsProvider,double>(
+                 selector: (p0, p1) => p1.containerHeight,
+                 builder: (context, containerheight, child) =>  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0, // Set right to 0 to stretch the container across the screen
+                    child: Container(
+                    height: height * containerheight,
+                    decoration: BoxDecoration(
+                      color: navsColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                      ),
                     ),
-                  ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(onPressed: () {
-                                  if(heigh==0.36){
-                                    setState(() {
-                                      heigh=0.5;
-                                    });
-                                  }
-                                  else{
-                                    setState(() {
-                                      heigh=0.36;
-                                    });
-                                  }
-                                }, icon: Icon(heigh==0.36?Icons.keyboard_arrow_up_outlined:Icons.keyboard_arrow_down_outlined,color: tealLight,)),
-                              ],
-                            ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                          ElevatedButton(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
 
-                            onPressed: () {
+                                    decoration:containerheight==0.37?null: BoxDecoration(border: Border.all(width: 1,color: Colors.white54),
 
-                          }, child: Icon(Icons.file_upload_outlined,color: tealLight),),
-                          ElevatedButton(
-                              style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(tealLight)),
+                                      borderRadius: BorderRadius.all(Radius.circular(40),
+
+                                      ),
+                                    ),
+                                    child: IconButton(onPressed: () {
+                                      if(containerheight==0.37){
+                                        Provider.of<ProductDetailsProvider>(context,listen: false).containerHeight=0.6;
+                                      }
+                                      else{
+                                        Provider.of<ProductDetailsProvider>(context,listen: false).containerHeight=0.37;
+                                      }
+                                    }, icon: Icon(containerheight==0.37?Icons.keyboard_arrow_up_outlined:Icons.keyboard_arrow_down_outlined,color: tealLight,)),
+                                  ),
+                                ],
+                              ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                            ElevatedButton(
+
                               onPressed: () {
 
-                          }, child: SizedBox(width: width*0.5,height: height*0.06,child: Center(child: Text('Order Now',style: TextStyle(color: whiteColor),))))
-                        ],),
-                        Text('Description',style: TextStyle(fontStyle: FontStyle.italic),),
-                            Text(
-                              'Slim-fitting style, contrast raglan long sleeve, three-button henley placket, light weight & soft fabric for breathable and comfortable wearing. And Solid stitched shirts with round neck made for durability and a great fit for casual fashion wear and diehard baseball fans. The Henley style round neckline includes a three-button placket.',
-                              maxLines: 10,
+                            }, child: Icon(Icons.file_upload_outlined,color: tealLight),),
+                            ElevatedButton(
+                                style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(tealLight)),
+                                onPressed: () {
 
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            }, child: SizedBox(width: width*0.6,height: height*0.06,child: Center(child: Text('Order Now',style: TextStyle(color: whiteColor),))))
+                          ],),
+                          Text('Description',style: TextStyle(fontStyle: FontStyle.italic),),
+                              Text(
+                                widget.product.description,
+                                maxLines: containerheight==0.37?7:9,
+                                overflow: TextOverflow.ellipsis,
+                              ),
 Visibility(
-  visible: heigh!=0.36?true:false,
+  visible: containerheight!=0.37?true:false,
   child:   Card(child: Column(children: [
     Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(5.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text('Reviews(100)'),
+          Text('Reviews('+widget.product.rating.count.toString()+')'),
         ],
       ),
     ),
     Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-      Text('4.33'),
+      Text(widget.product.rating.rate.toString(),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
       SizedBox(
-        width: 120,
-        height: height * 0.05,
-        child: ListView.builder(
+            // color: Colors.black.withOpacity(0.6), // Semi-transparent overlay color
+
+            width: 100,
+        height: height * 0.03,
+        child:
+        RatingBar.builder(
+          initialRating: widget.product.rating.rate,
+          minRating: 1,
+          direction: Axis.horizontal,
+          allowHalfRating: true,
           itemCount: 5,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Icon(
-              Icons.star_outlined,
-              color: goldenColor,
-            );
+          itemSize: 20.0,
+          itemBuilder: (context, _) => Icon(
+            Icons.star,
+            color: Colors.amber,
+          ),
+          onRatingUpdate: (rating) {
+            print(rating);
           },
-        ),
+        )
+
       ),
 
     ],)
   ]),),
 )
-                      ]),
+                        ]),
+                      ),
                     ),
-                  ),
               ),
+               ),
             ],
       ),
           ],

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:interview_project/screens/all_products_screen.dart';
 import 'package:interview_project/screens/login_screen.dart';
-import 'package:interview_project/screens/product_details_screen.dart';
 import 'package:interview_project/utils/constants.dart';
 
 void main() {

@@ -6,5 +6,6 @@ const tealDark=Color(0xFF188095); // #188095
 const tealLight=Color(0xFF2AB3C6); // #2AB3C6
 const goldenColor = Color(0xFFDAA520); //golden color
 const blackShade=Colors.black45;
+const navsColor=Colors.black12;
 const headingFontSize=25.0;
 const productFontSize=20.0;
